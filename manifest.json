@@ -1,0 +1,9 @@
+{
+  "id": "globe-view",
+  "name": "Globe View",
+  "version": "0.1.0",
+  "minAppVersion": "1.8.0",
+  "description": "Wrap a vault map around a 3D globe and pin links to notes.",
+  "author": "Globe View contributors",
+  "isDesktopOnly": true
+}
