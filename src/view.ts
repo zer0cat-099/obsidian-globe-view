@@ -1,6 +1,7 @@
-import { ItemView, Notice, setIcon } from 'obsidian';
+import { ItemView, Menu, Notice, setIcon } from 'obsidian';
 import type { TFile, WorkspaceLeaf } from 'obsidian';
 import type GlobePlugin from './main.ts';
+import { removeMarker } from './model.ts';
 import type { MapPosition, Marker } from './model.ts';
 import { FilePicker } from './settings.ts';
 import { GlobeSurface } from './surface.ts';
@@ -91,6 +92,7 @@ export class GlobeView extends ItemView {
         place: position => this.placeMarker(position),
         label: marker => this.markerLabel(marker),
         open: marker => this.openMarker(marker),
+        contextMenu: (marker, event) => this.showMarkerMenu(marker, event),
       });
     } catch (error) {
       this.showStatus(error instanceof Error ? error.message : '3D 지도를 열 수 없습니다.');
@@ -156,6 +158,14 @@ export class GlobeView extends ItemView {
     return this.app.vault.getFileByPath(marker.notePath)?.basename
       ?? marker.notePath.split('/').pop()?.replace(/\.md$/i, '')
       ?? marker.notePath;
+  }
+
+  private showMarkerMenu(marker: Marker, event: MouseEvent): void {
+    new Menu().addItem(item => item
+      .setTitle('마커 삭제')
+      .setIcon('trash-2')
+      .onClick(() => { void this.globe.updateSettings(settings => removeMarker(settings, marker.id)); }))
+      .showAtMouseEvent(event);
   }
 
   private openMarker(marker: Marker): void {

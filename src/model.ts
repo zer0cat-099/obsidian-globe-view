@@ -91,6 +91,11 @@ export function selectMap(settings: Settings, imagePath: string): Settings {
   return { ...settings, imagePath, crop, mapCrops };
 }
 
+export function removeMarker(settings: Settings, id: string): Settings {
+  const markers = settings.markers.filter(marker => marker.id !== id);
+  return markers.length === settings.markers.length ? settings : { ...settings, markers };
+}
+
 export function renamePath(path: string, oldPath: string, newPath: string): string {
   if (path === oldPath || path.startsWith(oldPath + '/')) {
     return newPath + path.slice(oldPath.length);

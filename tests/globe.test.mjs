@@ -36,6 +36,17 @@ test('markers round-trip with map and note paths and reject invalid positions', 
   assert.deepEqual(readSettings(JSON.parse(JSON.stringify(settings))).markers, [marker]);
 });
 
+test('deleting one marker preserves other markers linked to the same note', async () => {
+  const { removeMarker } = await import('../src/model.ts');
+  const first = { id: 'first', mapPath: 'Map.png', notePath: 'Coast.md', position: { u: 0.2, v: 0.4 } };
+  const second = { ...first, id: 'second', position: { u: 0.3, v: 0.5 } };
+  const settings = readSettings({ imagePath: 'Map.png', markers: [first, second] });
+  const updated = removeMarker(settings, first.id);
+  assert.deepEqual(updated, { ...settings, markers: [second] });
+  assert.deepEqual(settings.markers, [first, second]);
+  assert.equal(removeMarker(updated, first.id), updated);
+});
+
 test('a surface click stores its position in the original map image', async () => {
   const { pointToMap, mapToPoint } = await import('../src/model.ts');
   const crop = { left: 0.1, right: 0.9 };

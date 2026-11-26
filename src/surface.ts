@@ -18,6 +18,7 @@ interface SurfaceActions {
   place(position: MapPosition): void;
   label(marker: Marker): string;
   open(marker: Marker): void;
+  contextMenu(marker: Marker, event: MouseEvent): void;
 }
 
 export class GlobeSurface {
@@ -142,6 +143,11 @@ export class GlobeSurface {
       caption.textContent = label;
       button.append(caption);
       button.addEventListener('click', () => this.actions.open(marker));
+      button.addEventListener('contextmenu', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.actions.contextMenu(marker, event);
+      });
       this.pinsEl.append(button);
       this.pins.push({ point, button });
     }
